@@ -1,8 +1,6 @@
-// Include important C++ libraries here
 #include<sstream>
 #include <SFML/Graphics.hpp>
 
-// Make code easier to type with "using namespace"
 using namespace sf;
 
 int main()
