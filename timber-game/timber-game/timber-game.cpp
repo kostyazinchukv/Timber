@@ -3,6 +3,11 @@
 #include <SFML/Graphics.hpp>
 
 using namespace sf;
+void updateBranches(int seed);
+const int numBranch = 6;
+Sprite branches[numBranch];
+enum class side{LEFT, RIGHT, NONE};
+side branchPositions[numBranch];
 
 int main()
 {
@@ -100,6 +105,20 @@ int main()
 	messageText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
 	messageText.setPosition(1440 / 2.0f, 900 / 2.0f);
 	scoreText.setPosition(20, 20);
+
+	Texture textureBranch;
+	textureBranch.loadFromFile("graphics/branch.png");
+	for (int i = 0; i < numBranch; i++)
+	{
+		branches[i].setTexture(textureBranch);
+		branches[i].setPosition(-2000, -2000);
+		branches[i].setOrigin(220, 20);
+	}
+	updateBranches(1);
+	updateBranches(2);
+	updateBranches(3);
+	updateBranches(4);
+	updateBranches(5);
 
 	while (window.isOpen())
 	{
@@ -211,6 +230,25 @@ int main()
 			std::stringstream ss;
 			ss << "Score = " << score;
 			scoreText.setString(ss.str());
+
+			for (int i = 0; i < numBranch; i++)
+			{
+				float height = i * 125;
+				if (branchPositions[i] == side::LEFT)
+				{
+					branches[i].setPosition(508, height);
+					branches[i].setRotation(180);
+				}
+				else if (branchPositions[i] == side::RIGHT)
+				{
+					branches[i].setPosition(1108, height);
+					branches[i].setRotation(0);
+				}
+				else 
+				{
+					branches[i].setPosition(3000, height);
+				}
+			}
 		}
 		// Draw game scene here
 		window.draw(spriteBackground);
@@ -224,6 +262,9 @@ int main()
 		window.draw(spriteCloud1);
 		window.draw(spriteCloud2);
 		window.draw(spriteCloud3);
+		for (int i = 0; i < numBranch; i++) {
+			window.draw(branches[i]);
+		}
 
 
 
@@ -235,4 +276,26 @@ int main()
 	}
 
 	return 0;
+}
+
+void updateBranches(int seed)
+{
+	for (int i = numBranch - 1; i > 0; i--)
+	{
+		branchPositions[i] = branchPositions[i - 1];
+	}
+	srand(static_cast<int>(time(0)) + seed);
+	int rand_side = rand() % 5;
+	switch (rand_side)
+	{
+	case 0:
+		branchPositions[0] = side::LEFT;
+		break;
+	case 1:
+		branchPositions[0] = side::RIGHT;
+		break;
+	default:
+		branchPositions[0] = side::NONE;
+		break;
+	}
 }
